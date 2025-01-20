@@ -1,16 +1,16 @@
 workflows:
     sample-workflow:
-        name: Jack's Notes
+        name: Jacks Notes
         max_build_duration: 120
         instance_type: mac_mini_m1
         integrations:
-          app_store_connect: Jack's Notes API key
+          app_store_connect: Jacks Notes API key
         environment:
           ios_signing:
             distribution_type: app_store
             bundle_identifier: com.jacksNotes2024
           vars:
-            APP_STORE_APPLE_ID: 6740699722 #change
+            APP_STORE_APPLE_ID: 6740782957
             BUNDLE_ID: "com.jacksNotes2024"
             XCODE_WORKSPACE: "JacksNote.xcworkspace"
             XCODE_SCHEME: "JacksNote"
@@ -50,4 +50,4 @@ workflows:
           app_store_connect:
             auth: integration
             submit_to_app_store: true
-            copyright: Jack's Notes 2024
+            copyright: Jacks Notes 2024

@@ -6,6 +6,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import OnBoardingScreen from './src/screens/OnBoardingScreen';
 import HomeScreen from './src/screens/HomeScreen';
+import AdvancedNoteScreen from './src/screens/AdvancedNoteScreen';
+import NotesScreen from './src/screens/NotesScreen';
+import DeletedScreen from './src/screens/DeletedScreen';
+import StarredScreen from './src/screens/StarredScreen';
+import SwipeScreen from './src/screens/SwipeScreen';
 
 enableScreens();
 
@@ -73,6 +78,31 @@ const App = () => {
                   <Stack.Screen 
                       name="HomeScreen" 
                       component={HomeScreen} 
+                      options={{ headerShown: false }} 
+                  />
+                  <Stack.Screen 
+                      name="AdvancedNoteScreen" 
+                      component={AdvancedNoteScreen} 
+                      options={{ headerShown: false }} 
+                  />
+                  <Stack.Screen 
+                      name="NotesScreen" 
+                      component={NotesScreen} 
+                      options={{ headerShown: false }} 
+                  />
+                  <Stack.Screen 
+                      name="DeletedScreen" 
+                      component={DeletedScreen} 
+                      options={{ headerShown: false }} 
+                  />
+                  <Stack.Screen 
+                      name="StarredScreen" 
+                      component={StarredScreen} 
+                      options={{ headerShown: false }} 
+                  />
+                  <Stack.Screen 
+                      name="SwipeScreen" 
+                      component={SwipeScreen} 
                       options={{ headerShown: false }} 
                   />
               </Stack.Navigator>

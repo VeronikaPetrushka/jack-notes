@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, ScrollView, TextInput} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
+import { launchImageLibrary } from 'react-native-image-picker';
 import { useNavigation } from "@react-navigation/native";
 import Icons from "./Icons";
 
 const { height } = Dimensions.get('window');
 
-const Home = () => {
+const AdvancedNote = () => {
     const navigation = useNavigation();
     const [title, setTitle] = useState('');
     const [note, setNote] = useState('');
     const [isTag, setIsTag] = useState(false);
     const [tagChosen, setTagChosen] = useState(null);
+    const [image, setImage] = useState(null);
 
     const getCurrentDate = () => {
         const today = new Date();
@@ -19,6 +21,14 @@ const Home = () => {
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const year = today.getFullYear();
         return `${day}.${month}.${year}`;
+    };
+
+    const handleUploadImage = () => {
+        launchImageLibrary({ mediaType: 'photo' }, (response) => {
+            if (!response.didCancel && !response.error && response.assets) {
+                setImage(response.assets[0].uri);
+            }
+        });
     };
 
     const handleTag = () => {
@@ -37,7 +47,7 @@ const Home = () => {
     };
 
     const handleSave = async () => {
-        if (!title || !note) {
+        if (!title || !note || !image) {
             alert("Please fill in all fields before saving.");
             return;
         }
@@ -45,6 +55,7 @@ const Home = () => {
         const newNote = {
             title,
             note,
+            image,
             date: getCurrentDate(),
             tag: tagChosen,
         };
@@ -58,11 +69,15 @@ const Home = () => {
 
             setTitle("");
             setNote("");
+            setImage(null);
             setTagChosen(null);
-            alert("Note saved successfully!");
+            alert("Advanced note saved successfully!");
+
+            navigation.goBack('');
+
         } catch (error) {
-            console.error("Error saving note:", error);
-            alert("Failed to save the note. Please try again.");
+            console.error("Error saving the advanced note:", error);
+            alert("Failed to save an advanced note. Please try again.");
         }
     };
 
@@ -70,12 +85,10 @@ const Home = () => {
         <View style={styles.container}>
 
             <View style={styles.logoContainer}>
-                <Image source={require('../assets/logo-text.png')} style={styles.logoText} />
+                <Text style={styles.quickText}>Advanced note:</Text>
             </View>
 
             <ScrollView style={{width: '100%', paddingHorizontal: 30}}>
-
-                <Text style={styles.quickText}>Quick Note:</Text>
 
                 <View style={styles.infoContainer}>
 
@@ -105,6 +118,18 @@ const Home = () => {
                             onChangeText={setNote}
                             multiline
                         />
+
+                        <View style={styles.imageContainer}>
+                            {
+                                image ? (
+                                    <Image source={{uri: image}} style={styles.image} />
+                                ) : (
+                                    <View style={{width: 30, height: 30}}>
+                                        <Icons type={'upload'} />
+                                    </View>
+                                )
+                            }
+                        </View>
                     </View>
 
                     <View style={styles.toolsContainer}>
@@ -112,11 +137,10 @@ const Home = () => {
                             <Icons type={'tag'} />
                         </TouchableOpacity>
                         <TouchableOpacity 
-                            style={[styles.toolBtn, !title && !note && {opacity: 0.3}]} 
-                            onPress={handleSave}
-                            disabled={!title && !note}
+                            style={styles.toolBtn} 
+                            onPress={handleUploadImage}
                             >
-                            <Icons type={'save'} />
+                            <Icons type={'upload'} />
                         </TouchableOpacity>
 
                         {
@@ -149,18 +173,15 @@ const Home = () => {
 
                     </View>
 
+                    <TouchableOpacity 
+                        style={[styles.saveBtn, !title && !note && !image && {opacity: 0.3}]} 
+                        onPress={handleSave}
+                        disabled={!title && !note && !image}
+                        >
+                        <Icons type={'save'} />
+                    </TouchableOpacity>
+
                 </View>
-
-                <Text style={styles.quickText}>Create the advanced note:</Text>
-
-                <TouchableOpacity style={styles.advancedBtn} onPress={() => navigation.navigate('AdvancedNoteScreen')}>
-                    <View style={{width: 20, height: 20, marginRight: 10}}>
-                        <Icons type={'plus'} />
-                    </View>
-                    <Text style={styles.advancedBtnText}>Advanced Note</Text>
-                </TouchableOpacity>
-
-                <View style={{height: 200}} />
 
             </ScrollView>
         </View>
@@ -198,7 +219,7 @@ const styles = StyleSheet.create({
 
     infoContainer: {
         width: '100%',
-        minHeight: 300,
+        minHeight: height * 0.6,
         alignItems: 'center',
         justifyContent: 'flex-start',
         borderWidth: 1,
@@ -257,26 +278,10 @@ const styles = StyleSheet.create({
 
     noteInput: {
         width: '100%',
+        marginBottom: 15,
         fontSize: 16,
         fontWeight: '400',
         color: '#3a3a3a',
-        lineHeight: 21.8
-    },
-
-    advancedBtn: {
-        width: '100%',
-        padding: 19,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 100,
-        backgroundColor: '#fff',
-        flexDirection: 'row'
-    },
-
-    advancedBtnText: {
-        fontSize: 16,
-        fontWeight: '700',
-        color: '#000',
         lineHeight: 21.8
     },
 
@@ -285,7 +290,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'flex-start',
         marginLeft: 35,
-        marginBottom: 30
+        marginBottom: 70
     },
 
     toolBtn: {
@@ -294,6 +299,18 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 100,
         backgroundColor: '#d13932',
+    },
+
+    saveBtn: {
+        width: 80,
+        height: 80,
+        padding: 24,
+        borderRadius: 100,
+        backgroundColor: '#d13932',
+        borderWidth: 1,
+        borderColor: '#fff',
+        position: 'absolute',
+        bottom: -30
     },
 
     tagsContainer: {
@@ -331,8 +348,24 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#fff',
         lineHeight: 19,
+    },
+
+    imageContainer: {
+        width: '100%',
+        height: 153,
+        borderRadius: 14,
+        backgroundColor: '#c7c7c7',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
+    },
+
+    image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
     }
 
 })
 
-export default Home;
+export default AdvancedNote;

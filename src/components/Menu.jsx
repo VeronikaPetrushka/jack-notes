@@ -44,7 +44,7 @@ const Menu = () => {
                 <TouchableOpacity 
                     style={styles.addBtn} 
                     onPress={() => handleNavigate('HomeScreen')}>
-                    <Icons type={'3'} active={activeButton === 'HomeScreen'}/>
+                    <Icons type={'3'} />
                 </TouchableOpacity>
             </View>
 

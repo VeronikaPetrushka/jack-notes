@@ -12,8 +12,8 @@ workflows:
           vars:
             APP_STORE_APPLE_ID: 6740782957
             BUNDLE_ID: "com.jacksNotes2024"
-            XCODE_WORKSPACE: "JacksNote.xcworkspace"
-            XCODE_SCHEME: "JacksNote"
+            XCODE_WORKSPACE: "JacksNotes.xcworkspace"
+            XCODE_SCHEME: "JacksNotes"
         scripts:
           - name: Install node modules
             script: |
